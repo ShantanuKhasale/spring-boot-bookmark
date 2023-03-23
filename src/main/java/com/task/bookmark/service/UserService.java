@@ -5,9 +5,13 @@ import com.task.bookmark.exception.UniqueConstraintException;
 import com.task.bookmark.model.User;
 import com.task.bookmark.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -52,4 +56,12 @@ public class UserService {
         return user;
     }
 
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return Optional.ofNullable(authentication)
+                .filter(Authentication::isAuthenticated)
+                .map(Authentication::getPrincipal)
+                .map(User.class::cast)
+                .orElseThrow(() -> new UsernameNotFoundException("User not logged in"));
+    }
 }

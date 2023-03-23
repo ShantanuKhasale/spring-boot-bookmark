@@ -23,8 +23,8 @@ public class BookmarkDTO {
     @NotNull(message = "Enter Valid folderId")
     private Long folderId;
 
-    @NotNull(message = "Enter Valid userId")
-    private Long userId;
+//    @NotNull(message = "Enter Valid userId")
+//    private Long userId;
 
 
     public BookmarkDTO(Bookmark bookmark) {
@@ -32,7 +32,7 @@ public class BookmarkDTO {
         this.title = bookmark.getTitle();
         this.url = bookmark.getUrl();
         this.folderId = bookmark.hasFolder() ? bookmark.getFolder().getId() : null;
-        this.userId = bookmark.hasUser() ? bookmark.getUser().getId() : null;
+//        this.userId = bookmark.hasUser() ? bookmark.getUser().getId() : null;
     }
 
 }

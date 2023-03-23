@@ -39,7 +39,7 @@ public class FolderController {
     @PostMapping
     public ResponseEntity<FolderDTO> createFolder(@Valid @RequestBody FolderDTO folderdto) {
         Folder folderRequest = folderMapper.toFolder(folderdto); // Convert To Folder
-        Folder folder = folderService.saveFolder(folderdto.getUserId(), folderRequest); // Send To Service Layer
+        Folder folder = folderService.saveFolder(folderRequest); // Send To Service Layer
         FolderDTO folderResponse = folderMapper.toFolderDTO(folder); // Convert back to FolderDTO
         return new ResponseEntity<>(folderResponse, HttpStatus.CREATED);
     }

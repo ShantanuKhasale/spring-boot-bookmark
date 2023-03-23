@@ -4,26 +4,33 @@ import com.task.bookmark.AbstractContainerBaseTest;
 import com.task.bookmark.exception.ResourceNotFoundException;
 import com.task.bookmark.exception.UniqueConstraintException;
 import com.task.bookmark.model.User;
-import jakarta.transaction.Transactional;
+import com.task.bookmark.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.junit.Assert.assertThrows;
 
 @SpringBootTest
-@Transactional
+//@Transactional
 public class UserServiceTest extends AbstractContainerBaseTest {
 
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserRepository userRepository;
+
+
+    @BeforeEach
+    public void beforeEach() {
+        userRepository.deleteAll();
+    }
 
     @Test
-    public void ShouldCreateUserSuccessfully() {
+    public void shouldCreateUserSuccessfully() {
         //given
         User user = new User("Test Username", "Test Password");
         //when
@@ -33,26 +40,28 @@ public class UserServiceTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void ShouldGetUserDetailsById() {
+    public void shouldGetUserDetailsById() {
         // given
         User user = new User("Shantanu", "123456");
         User savedUser = userService.saveUser(user);
         Long userId = savedUser.getId();
         // when
         User retriveUser = userService.getUserById(userId);
-        Assertions.assertEquals(savedUser, retriveUser);
+        Assertions.assertEquals(savedUser.getId(), retriveUser.getId());
+        Assertions.assertEquals(savedUser.getUsername(), retriveUser.getUsername());
+        Assertions.assertEquals(savedUser.getPassword(), retriveUser.getPassword());
     }
 
     @Test
-    public void ShouldThrowExceptionForInvalidUserId() {
+    public void shouldThrowExceptionForInvalidUserId() {
         //given
-        Long userId = 56L; // Invalid Id
+        Long userId = Long.MAX_VALUE; // Invalid Id
         // then
         assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(userId));
     }
 
     @Test
-    public void ShouldThrowExceptionForDuplicateUsername() {
+    public void shouldThrowExceptionForDuplicateUsername() {
         //given
         User user1 = new User("USERNAME", "user1");
         userService.saveUser(user1);
@@ -63,7 +72,7 @@ public class UserServiceTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void ShouldReturnAllUsers() {
+    public void shouldReturnAllUsers() {
         //given
         User user1 = new User("user1", "user1");
         User user2 = new User("user2", "user2");
@@ -75,11 +84,11 @@ public class UserServiceTest extends AbstractContainerBaseTest {
         userService.saveUser(user3);
 
         //then
-        Assertions.assertTrue(userService.getAllUsers().containsAll(List.of(user1, user2, user3)));
+        Assertions.assertEquals(3, userService.getAllUsers().size());
     }
 
     @Test
-    public void ShouldDeleteUserSuccessfully() {
+    public void shouldDeleteUserSuccessfully() {
         // given
         User testUser = new User("Test User", "testUser");
         User savedUser = userService.saveUser(testUser);
@@ -90,7 +99,7 @@ public class UserServiceTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void ShouldUpdateUserDetails() {
+    public void shouldUpdateUserDetails() {
         // given
         User user = new User("testUser", "testUser");
         User savedUser = userService.saveUser(user);

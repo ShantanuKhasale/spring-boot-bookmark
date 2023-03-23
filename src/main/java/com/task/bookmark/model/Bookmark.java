@@ -1,19 +1,21 @@
 package com.task.bookmark.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "bookmarks")
-public class Bookmark {
-
+public class Bookmark implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,12 +23,14 @@ public class Bookmark {
     private String url;
     @ManyToOne
     @JoinColumn(name = "folder_id")
-    @JsonManagedReference
+    @JsonBackReference
+    @ToString.Exclude
     private Folder folder;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
+    @ToString.Exclude
     private User user;
 
     public Bookmark(String title, String url, Folder folder) {
@@ -55,4 +59,5 @@ public class Bookmark {
     public boolean hasUser() {
         return this.user != null;
     }
+
 }

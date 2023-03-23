@@ -6,9 +6,9 @@ import java.util.List;
 public class ValidationErrorDetails {
     private Date timestamp;
     private String message;
-    private List<String> details;
+    private List<FieldError> details;
 
-    public ValidationErrorDetails(Date timestamp, String message, List<String> details) {
+    public ValidationErrorDetails(Date timestamp, String message, List<FieldError> details) {
         super();
         this.timestamp = timestamp;
         this.message = message;
@@ -23,7 +23,7 @@ public class ValidationErrorDetails {
         return message;
     }
 
-    public List<String> getDetails() {
+    public List<FieldError> getDetails() {
         return details;
     }
 }
